@@ -1,11 +1,12 @@
 {
   "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
     "patchright": "^1.52.5"
   },
-  "name": "artfight",
+  "name": "th-uploader",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

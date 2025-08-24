@@ -20,4 +20,6 @@ RUN npx playwright install chrome
 
 COPY . .
 
-CMD ["sh", "-c", "Xvfb :99 -screen 0 1024x768x24 & node ./index.js"]
+USER 1890
+
+ENTRYPOINT ["./entrypoint.sh"]
