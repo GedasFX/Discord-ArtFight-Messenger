@@ -1,6 +1,6 @@
 import { chromium } from "patchright";
 
-const browser = await chromium.launchPersistentContext("data/local", {
+const browser = await chromium.launchPersistentContext("data", {
   channel: "chrome",
   headless: false,
   viewport: null,
