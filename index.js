@@ -1,14 +1,8 @@
 import express from "express";
 import multer from "multer";
-import { chromium } from "patchright";
+import { getBrowser } from "./src/browserManager";
 
 const uploadUrl = 'https://toyhou.se/~images/upload';
-
-const browser = await chromium.launchPersistentContext("data", {
-  channel: "chrome",
-  headless: false,
-  viewport: null,
-});
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -21,8 +15,13 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   }
 
   const characterIds = req.body.character_ids ? (Array.isArray(req.body.character_ids) ? req.body.character_ids : [req.body.character_ids]) : [];
+  if (characterIds.length === 0) {
+    return res.status(400).json({ error: "No character IDs provided" });
+  }
 
+  const browser = await getBrowser();
   const page = await browser.newPage();
+
   await page.goto(uploadUrl);
 
   if (page.url() !== uploadUrl) {
