@@ -66,4 +66,4 @@ These steps will persist the authentication data inside the data folder, and the
 
 **This project is for educational purposes only.**
 
-This project really exists only because my friends do not want to sign up for AF, and current Discord embeds have basically no information. I wanted to engineer a better solution.
+This project really exists only because my friends do not want to sign up for AF, and current Discord embeds have basically no information. I wanted to engineer a better solution. There will be no support.
