@@ -4,12 +4,14 @@ let browser;
 let inactivityTimer;
 
 function resetInactivityTimer() {
+  const duration = Number(process.env.BROWSER_INACTIVITY_TIMEOUT || 2 * 60);
+
   if (inactivityTimer) clearTimeout(inactivityTimer);
   inactivityTimer = setTimeout(async () => {
     console.log("Closing browser due to inactivity.");
     await browser.close();
     browser = null;
-  }, 2 * 60 * 1000); // 2 minutes
+  }, duration * 1000);
 }
 
 /**

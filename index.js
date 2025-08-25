@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import { discord } from "./src/managers/manager-discord.js";
+import { getBrowser } from "./src/managers/manager-browser.js";
 
 config(); // Load environment variables from .env file
 
@@ -11,3 +12,4 @@ if (!TOKEN) {
 }
 
 await discord.login(process.env.TOKEN);
+await getBrowser();

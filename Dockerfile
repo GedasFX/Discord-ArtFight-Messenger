@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV DISPLAY=:99
+ENV BROWSER_INACTIVITY_TIMEOUT=120
 
 COPY package*.json ./
 
