@@ -10,62 +10,46 @@ discord.once("clientReady", () => {
 discord.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
-  const processTimer = startProcessTimer(interaction);
-
   try {
-    {
-      if (interaction.commandName === "af") {
-        await handleAfCommand(interaction);
-      }
+    let response;
+
+    if (interaction.commandName === "af") {
+      await interaction.deferReply();
+      response = await handleAfCommand(interaction);
     }
+
+    if (response) {
+      await reply(interaction, response);
+    }
+    
   } catch (error) {
     console.error("Error handling interaction:", error);
 
-    if (error.cause === 'user') {
-      await reply(interaction, { content: `There was an error while processing your request: ${error.message}`, ephemeral: true });
+    if (error.cause === "user") {
+      await reply(interaction, { content: `There was an error while processing your request: ${error.message}`, ephemeral: true }, processTimer);
     }
-  } finally {
-    clearProcessTimer(processTimer);
   }
 });
 
 /**
- * 
- * @param {ChatInputCommandInteraction} interaction 
- * @returns 
+ * @param {ChatInputCommandInteraction} interaction
+ * @param {MessagePayload | import("discord.js").InteractionReplyOptions} content
+ */
+async function reply(interaction, content) {
+  await interaction.followUp(content);
+}
+
+
+/**
+ * @param {ChatInputCommandInteraction} interaction
+ * @returns
  */
 async function handleAfCommand(interaction) {
   const url = interaction.options.getString("url");
   if (!url) {
-    await reply(interaction, { content: "URL is required.", ephemeral: true });
-    return;
+    return { content: "URL is required.", ephemeral: true };
   }
 
   const embed = await getAttackEmbed(url);
-  await reply(interaction, { embeds: [embed] });
-}
-
-function startProcessTimer(interaction) {
-  return setTimeout(async () => {
-    await interaction.deferReply();
-  }, 1000);
-}
-
-function clearProcessTimer(timer) {
-  clearTimeout(timer);
-}
-
-/**
- * 
- * @param {ChatInputCommandInteraction} interaction 
- * @param {MessagePayload | import("discord.js").InteractionReplyOptions} content 
- */
-async function reply(interaction, content) {
-  if (interaction.deferred && !interaction.replied) {
-    await interaction.editReply(content);
-  } else if (interaction.replied || interaction.deferred) {
-    await interaction.followUp(content);
-  } else {
-    await interaction.reply(content);
-  }
+  return { embeds: [embed] };
 }

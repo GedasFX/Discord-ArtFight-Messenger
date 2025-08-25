@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/gedasfx/discord-artfight-messenger:main
+    build: .
     volumes:
       - ./data/app:/app/data
     env_file:
