@@ -48,7 +48,7 @@ async function handleAfCommand(interaction) {
 function startProcessTimer(interaction) {
   return setTimeout(async () => {
     await interaction.deferReply();
-  }, 2500);
+  }, 1000);
 }
 
 function clearProcessTimer(timer) {
@@ -61,7 +61,9 @@ function clearProcessTimer(timer) {
  * @param {MessagePayload | import("discord.js").InteractionReplyOptions} content 
  */
 async function reply(interaction, content) {
-  if (interaction.replied || interaction.deferred) {
+  if (interaction.deferred && !interaction.replied) {
+    await interaction.editReply(content);
+  } else if (interaction.replied || interaction.deferred) {
     await interaction.followUp(content);
   } else {
     await interaction.reply(content);
