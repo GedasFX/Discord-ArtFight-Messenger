@@ -10,23 +10,33 @@ discord.once("clientReady", () => {
 discord.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
-  try {
-    let response;
+  let deferred = false;
+  let response;
 
-    if (interaction.commandName === "af") {
+  // Timer to defer if reply not sent in 2 seconds
+  const deferTimer = setTimeout(async () => {
+    if (!interaction.deferred && !interaction.replied) {
       await interaction.deferReply();
+      deferred = true;
+    }
+  }, 2000);
+
+  try {
+    if (interaction.commandName === "af") {
       response = await handleAfCommand(interaction);
     }
 
+    clearTimeout(deferTimer);
+
     if (response) {
-      await reply(interaction, response);
+      await reply(interaction, response, deferred);
     }
-    
   } catch (error) {
+    clearTimeout(deferTimer);
     console.error("Error handling interaction:", error);
 
     if (error.cause === "user") {
-      await reply(interaction, { content: `There was an error while processing your request: ${error.message}`, ephemeral: true }, processTimer);
+      await reply(interaction, { content: `There was an error while processing your request: ${error.message}`, flags: MessageFlags.Ephemeral }, deferred);
     }
   }
 });
@@ -34,20 +44,27 @@ discord.on("interactionCreate", async (interaction) => {
 /**
  * @param {ChatInputCommandInteraction} interaction
  * @param {MessagePayload | import("discord.js").InteractionReplyOptions} content
+ * @param {boolean} deferred
  */
-async function reply(interaction, content) {
-  await interaction.followUp(content);
+async function reply(interaction, content, deferred) {
+  if (deferred && !interaction.replied) {
+    await interaction.editReply(content);
+  } else if (interaction.replied || interaction.deferred) {
+    await interaction.followUp(content);
+  } else {
+    await interaction.reply(content);
+  }
 }
 
 
 /**
  * @param {ChatInputCommandInteraction} interaction
- * @returns
+ * @returns {Promise<MessagePayload | import("discord.js").InteractionReplyOptions>}
  */
 async function handleAfCommand(interaction) {
   const url = interaction.options.getString("url");
   if (!url) {
-    return { content: "URL is required.", ephemeral: true };
+    throw new Error("URL is required.", { cause: "user" });
   }
 
   const embed = await getAttackEmbed(url);
