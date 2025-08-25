@@ -1,17 +1,19 @@
 {
-  "dependencies": {
-    "express": "^5.1.0",
-    "multer": "^2.0.2",
-    "patchright": "^1.52.5"
-  },
-  "name": "th-uploader",
+  "name": "artfight-messenger",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup": "npx playwright install chrome",
+    "start": "node index.js",
+    "register-commands": "node register-commands.js"
   },
   "author": "",
-  "license": "ISC",
-  "description": ""
+  "license": "BSD-3-Clause",
+  "description": "Allows posting of artfight attacks to Discord",
+  "dependencies": {
+    "discord.js": "^14.22.1",
+    "dotenv": "^17.2.1",
+    "patchright": "^1.52.5"
+  }
 }

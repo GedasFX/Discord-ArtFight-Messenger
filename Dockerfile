@@ -19,6 +19,7 @@ RUN npm install
 RUN npx playwright install chrome
 
 COPY . .
+RUN mv scripts/register.sh ./register
 
 USER 1890
 

@@ -1,8 +1,8 @@
 services:
   app:
     build: .
-    ports:
-      - "3000:3000"
     volumes:
       - ./data/app:/app/data
-    hostname: th-uploader
+    env_file:
+      - .env
+    hostname: artfight-messenger

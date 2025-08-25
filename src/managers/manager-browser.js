@@ -8,7 +8,8 @@ function resetInactivityTimer() {
   inactivityTimer = setTimeout(async () => {
     console.log("Closing browser due to inactivity.");
     await browser.close();
-  }, 10 * 60 * 1000); // 10 minutes
+    browser = null;
+  }, 2 * 60 * 1000); // 2 minutes
 }
 
 /**
